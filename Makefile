@@ -134,6 +134,7 @@ $(OCAML_FRONTENDS):
 ## ./gencopy -I . -map OCamlFrontend402:OCamlFrontend403 OCamlFrontend402.Parsetree.expression > migrate_parsetree_402_403.ml
 
 MIGRATE_PARSETREE = \
+	migrate_parsetree_def.cmo \
 	migrate_parsetree_403_404.cmo \
 	migrate_parsetree_404_403.cmo \
 	migrate_parsetree_402_403.cmo \

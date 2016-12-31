@@ -1,3 +1,5 @@
+let migration_error = Migrate_parsetree_def.migration_error
+
 let rec copy_OCamlFrontend404_Parsetree_expression :
   OCamlFrontend404.Parsetree.expression ->
     OCamlFrontend403.Parsetree.expression
@@ -146,7 +148,7 @@ and copy_OCamlFrontend404_Parsetree_expression_desc :
           (copy_OCamlFrontend404_Parsetree_module_expr x1),
           (copy_OCamlFrontend404_Parsetree_expression x2))
   | OCamlFrontend404.Parsetree.Pexp_letexception _ ->
-      failwith "4.04 -> 4.03: Pexp_letexception"
+      migration_error `Pexp_letexception
   | OCamlFrontend404.Parsetree.Pexp_assert x0 ->
       OCamlFrontend403.Parsetree.Pexp_assert
         (copy_OCamlFrontend404_Parsetree_expression x0)
@@ -309,8 +311,7 @@ and copy_OCamlFrontend404_Parsetree_pattern_desc :
       OCamlFrontend403.Parsetree.Ppat_extension
         (copy_OCamlFrontend404_Parsetree_extension x0)
   | OCamlFrontend404.Parsetree.Ppat_open _ ->
-      failwith "4.04 -> 4.03: Ppat_open"
-
+      migration_error `Ppat_open
 and copy_OCamlFrontend404_Parsetree_core_type :
   OCamlFrontend404.Parsetree.core_type ->
     OCamlFrontend403.Parsetree.core_type

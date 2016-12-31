@@ -23,16 +23,17 @@ migrate_parsetree_403_404.cmo : OCamlFrontend404.cmi OCamlFrontend403.cmi
 migrate_parsetree_403_404.cmx : OCamlFrontend404.cmi OCamlFrontend403.cmi
 migrate_parsetree_404_403.cmo : OCamlFrontend404.cmi OCamlFrontend403.cmi
 migrate_parsetree_404_403.cmx : OCamlFrontend404.cmi OCamlFrontend403.cmi
-migrate_parsetree_reader.cmo : OCamlFrontend404.cmi OCamlFrontend403.cmi \
-    OCamlFrontend402.cmi migrate_parsetree_404_403.cmo \
+migrate_parsetree_def.cmo : OCamlFrontend404.cmi OCamlFrontend403.cmi \
+    OCamlFrontend402.cmi
+migrate_parsetree_def.cmx : OCamlFrontend404.cmi OCamlFrontend403.cmi \
+    OCamlFrontend402.cmi
+migrate_parsetree_reader.cmo : migrate_parsetree_404_403.cmo \
     migrate_parsetree_403_404.cmo migrate_parsetree_403_402.cmo \
     migrate_parsetree_402_403.cmo migrate_parsetree_reader.cmi
-migrate_parsetree_reader.cmx : OCamlFrontend404.cmi OCamlFrontend403.cmi \
-    OCamlFrontend402.cmi migrate_parsetree_404_403.cmx \
+migrate_parsetree_reader.cmx : migrate_parsetree_404_403.cmx \
     migrate_parsetree_403_404.cmx migrate_parsetree_403_402.cmx \
     migrate_parsetree_402_403.cmx migrate_parsetree_reader.cmi
-migrate_parsetree_reader.cmi : OCamlFrontend404.cmi OCamlFrontend403.cmi \
-    OCamlFrontend402.cmi
+migrate_parsetree_reader.cmi :
 migrate_parsetree_reader_gadt.cmo : OCamlFrontend404.cmi \
     OCamlFrontend403.cmi OCamlFrontend402.cmi migrate_parsetree_404_403.cmo \
     migrate_parsetree_402_403.cmo

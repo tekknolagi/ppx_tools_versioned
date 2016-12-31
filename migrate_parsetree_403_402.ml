@@ -1,3 +1,5 @@
+let migration_error = Migrate_parsetree_def.migration_error
+
 let rec copy_OCamlFrontend403_Parsetree_expression :
   OCamlFrontend403.Parsetree.expression ->
     OCamlFrontend402.Parsetree.expression
@@ -174,7 +176,7 @@ and copy_OCamlFrontend403_Parsetree_expression_desc :
       OCamlFrontend402.Parsetree.Pexp_extension
         (copy_OCamlFrontend403_Parsetree_extension x0)
   | OCamlFrontend403.Parsetree.Pexp_unreachable  ->
-      failwith "4.03 -> 4.02: Pexp_unreachable"
+      migration_error `Pexp_unreachable
 
 and copy_OCamlFrontend403_Asttypes_direction_flag :
   OCamlFrontend403.Asttypes.direction_flag ->
@@ -429,7 +431,7 @@ and copy_OCamlFrontend403_Parsetree_payload :
       OCamlFrontend402.Parsetree.PStr
         (copy_OCamlFrontend403_Parsetree_structure x0)
   | OCamlFrontend403.Parsetree.PSig _x0 ->
-      failwith "4.03 -> 4.02: PSig"
+      migration_error `PSig
   | OCamlFrontend403.Parsetree.PTyp x0 ->
       OCamlFrontend402.Parsetree.PTyp
         (copy_OCamlFrontend403_Parsetree_core_type x0)
@@ -1312,9 +1314,9 @@ and copy_OCamlFrontend403_Parsetree_constructor_arguments :
   =
   function
   | OCamlFrontend403.Parsetree.Pcstr_tuple x0 ->
-      (List.map copy_OCamlFrontend403_Parsetree_core_type x0)
+      List.map copy_OCamlFrontend403_Parsetree_core_type x0
   | OCamlFrontend403.Parsetree.Pcstr_record _x0 ->
-      failwith "4.03 -> 4.02: inline record"
+      migration_error `Pcstr_record
 
 and copy_OCamlFrontend403_Parsetree_label_declaration :
   OCamlFrontend403.Parsetree.label_declaration ->
@@ -1424,8 +1426,7 @@ and copy_OCamlFrontend403_Parsetree_constant :
          OCamlFrontend402.Asttypes.Const_int64 (Int64.of_string x0)
      | Some 'n' ->
          OCamlFrontend402.Asttypes.Const_nativeint (Nativeint.of_string x0)
-     | Some _ ->
-         failwith "4.03 -> 4.02: Pconst_integer"
+     | Some _ -> migration_error `Pconst_integer
      end
   | OCamlFrontend403.Parsetree.Pconst_char x0 ->
       OCamlFrontend402.Asttypes.Const_char x0
@@ -1434,8 +1435,7 @@ and copy_OCamlFrontend403_Parsetree_constant :
   | OCamlFrontend403.Parsetree.Pconst_float (x0,x1) ->
       begin match x1 with
       | None -> OCamlFrontend402.Asttypes.Const_float x0
-      | Some _ ->
-          failwith "4.03 -> 4.02: Pconst_float"
+      | Some _ -> migration_error `Pconst_float
       end
 
 and copy_option : 'f0 'g0 . ('f0 -> 'g0) -> 'f0 option -> 'g0 option =

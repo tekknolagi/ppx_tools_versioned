@@ -1,41 +1,20 @@
-module OCaml402 = struct
-  let ast_impl_magic_number = "Caml1999M016"
-  let ast_intf_magic_number = "Caml1999N015"
-  type tree =
-    | Intf of OCamlFrontend402.Parsetree.signature
-    | Impl of OCamlFrontend402.Parsetree.structure
-end
-
-module OCaml403 = struct
-  let ast_impl_magic_number = "Caml1999M019"
-  let ast_intf_magic_number = "Caml1999N018"
-  type tree =
-    | Intf of OCamlFrontend403.Parsetree.signature
-    | Impl of OCamlFrontend403.Parsetree.structure
-end
-
-module OCaml404 = struct
-  let ast_impl_magic_number = "Caml1999M020"
-  let ast_intf_magic_number = "Caml1999N018"
-  type tree =
-    | Intf of OCamlFrontend404.Parsetree.signature
-    | Impl of OCamlFrontend404.Parsetree.structure
-end
+open Migrate_parsetree_def
 
 type filename = string
 
-type tree =
-  | OCaml402 of OCaml402.tree
-  | OCaml403 of OCaml403.tree
-  | OCaml404 of OCaml404.tree
-
 let magics = [
-  OCaml402.ast_intf_magic_number, (fun x->OCaml402(OCaml402.Intf(Obj.obj x)));
-  OCaml402.ast_impl_magic_number, (fun x->OCaml402(OCaml402.Impl(Obj.obj x)));
-  OCaml403.ast_intf_magic_number, (fun x->OCaml403(OCaml403.Intf(Obj.obj x)));
-  OCaml403.ast_impl_magic_number, (fun x->OCaml403(OCaml403.Impl(Obj.obj x)));
-  OCaml404.ast_intf_magic_number, (fun x->OCaml404(OCaml404.Intf(Obj.obj x)));
-  OCaml404.ast_impl_magic_number, (fun x->OCaml404(OCaml404.Impl(Obj.obj x)));
+  OCaml402.ast_intf_magic_number,
+  (fun x -> OCaml402 (OCaml402.Intf (Obj.obj x)));
+  OCaml402.ast_impl_magic_number,
+  (fun x -> OCaml402 (OCaml402.Impl (Obj.obj x)));
+  OCaml403.ast_intf_magic_number,
+  (fun x -> OCaml403 (OCaml403.Intf (Obj.obj x)));
+  OCaml403.ast_impl_magic_number,
+  (fun x -> OCaml403 (OCaml403.Impl (Obj.obj x)));
+  OCaml404.ast_intf_magic_number,
+  (fun x -> OCaml404 (OCaml404.Intf (Obj.obj x)));
+  OCaml404.ast_impl_magic_number,
+  (fun x -> OCaml404 (OCaml404.Impl (Obj.obj x)));
 ]
 
 let magic_number = function
