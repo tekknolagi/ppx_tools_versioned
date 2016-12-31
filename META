@@ -1,19 +1,4 @@
-version = "5.0"
-description = "Tools for authors of ppx rewriters and other syntactic tools"
-archive(byte) = "ppx_tools.cma"
-archive(native) = "ppx_tools.cmxa"
-requires = "compiler-libs.common"
-
-package "metaquot" (
-  version = "5.0"
-  description = "Meta-quotation: Parsetree manipulation using concrete syntax"
-  requires = "ppx_tools"
-  ppx = "./ppx_metaquot"
-)
-
-package "migrate-parsetree" (
-  version = "5.0"
-  description = "Migrate between different versions of OCaml AST"
-  archive(byte) = "migrate_parsetree.cma"
-  archive(native) = "migrate_parsetree.cmxa"
-)
+version = "1.0"
+description = "Migrate between different versions of OCaml AST"
+archive(byte) = "migrate_parsetree.cma"
+archive(native) = "migrate_parsetree.cmxa"

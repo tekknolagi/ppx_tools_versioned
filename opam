@@ -8,8 +8,8 @@ dev-repo: "git://github.com/alainfrisch/ppx_tools.git"
 tags: [ "syntax" ]
 build: [[make "all"]]
 install: [[make "install"]]
-remove: [["ocamlfind" "remove" "ppx_tools"]]
+remove: [["ocamlfind" "remove" "ocaml-migrate-parsetree"]]
 depends: [
   "ocamlfind" {>= "1.5.0"}
 ]
-available: ocaml-version >= "4.03.0"
+available: ocaml-version >= "4.02.0"
