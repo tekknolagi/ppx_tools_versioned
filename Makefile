@@ -137,6 +137,7 @@ MIGRATE_PARSETREE = \
 	migrate_parsetree_403_404.cmo \
 	migrate_parsetree_404_403.cmo \
 	migrate_parsetree_402_403.cmo \
+	migrate_parsetree_403_402.cmo \
 	migrate_parsetree_reader.cmo
 
 migrate_parsetree.cma: $(MIGRATE_PARSETREE)

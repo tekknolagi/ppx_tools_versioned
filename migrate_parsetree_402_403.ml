@@ -471,9 +471,8 @@ and copy_OCamlFrontend402_Parsetree_structure_item_desc :
       OCamlFrontend403.Parsetree.Pstr_primitive
         (copy_OCamlFrontend402_Parsetree_value_description x0)
   | OCamlFrontend402.Parsetree.Pstr_type x0 ->
-      OCamlFrontend403.Parsetree.Pstr_type
-        (OCamlFrontend403.Asttypes.Recursive,
-         List.map copy_OCamlFrontend402_Parsetree_type_declaration x0)
+      let recflag, types = type_declarations x0 in
+      OCamlFrontend403.Parsetree.Pstr_type (recflag, types)
   | OCamlFrontend402.Parsetree.Pstr_typext x0 ->
       OCamlFrontend403.Parsetree.Pstr_typext
         (copy_OCamlFrontend402_Parsetree_type_extension x0)
@@ -841,9 +840,8 @@ and copy_OCamlFrontend402_Parsetree_signature_item_desc :
       OCamlFrontend403.Parsetree.Psig_value
         (copy_OCamlFrontend402_Parsetree_value_description x0)
   | OCamlFrontend402.Parsetree.Psig_type x0 ->
-      OCamlFrontend403.Parsetree.Psig_type
-        (OCamlFrontend403.Asttypes.Recursive,
-         List.map copy_OCamlFrontend402_Parsetree_type_declaration x0)
+      let recflag, types = type_declarations x0 in
+      OCamlFrontend403.Parsetree.Psig_type (recflag, types)
   | OCamlFrontend402.Parsetree.Psig_typext x0 ->
       OCamlFrontend403.Parsetree.Psig_typext
         (copy_OCamlFrontend402_Parsetree_type_extension x0)
@@ -1482,3 +1480,16 @@ and copy_Lexing_position : Lexing.position -> Lexing.position =
       Lexing.pos_bol = pos_bol;
       Lexing.pos_cnum = pos_cnum
     }
+
+and type_declarations types =
+  let open OCamlFrontend403 in
+  let is_nonrec (attr,_) = attr.Location.txt = "nonrec" in
+  match List.map copy_OCamlFrontend402_Parsetree_type_declaration types with
+  | (x :: xs)
+    when List.exists is_nonrec x.Parsetree.ptype_attributes ->
+      let ptype_attributes =
+        List.filter (fun x -> not (is_nonrec x)) x.Parsetree.ptype_attributes
+      in
+      (OCamlFrontend403.Asttypes.Nonrecursive,
+       {x with Parsetree.ptype_attributes} :: xs)
+  | types -> (OCamlFrontend403.Asttypes.Recursive, types)

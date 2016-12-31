@@ -1,54 +1,60 @@
-module OCaml402Config = struct
+module OCaml402 = struct
   let ast_impl_magic_number = "Caml1999M016"
   let ast_intf_magic_number = "Caml1999N015"
+  type tree =
+    | Intf of OCamlFrontend402.Parsetree.signature
+    | Impl of OCamlFrontend402.Parsetree.structure
 end
 
-module OCaml403Config = struct
+module OCaml403 = struct
   let ast_impl_magic_number = "Caml1999M019"
   let ast_intf_magic_number = "Caml1999N018"
+  type tree =
+    | Intf of OCamlFrontend403.Parsetree.signature
+    | Impl of OCamlFrontend403.Parsetree.structure
 end
 
-module OCaml404Config = struct
+module OCaml404 = struct
   let ast_impl_magic_number = "Caml1999M020"
   let ast_intf_magic_number = "Caml1999N018"
+  type tree =
+    | Intf of OCamlFrontend404.Parsetree.signature
+    | Impl of OCamlFrontend404.Parsetree.structure
 end
 
 type filename = string
 
 type tree =
-  | OCaml402_intf of OCamlFrontend402.Parsetree.signature
-  | OCaml402_impl of OCamlFrontend402.Parsetree.structure
-  | OCaml403_intf of OCamlFrontend403.Parsetree.signature
-  | OCaml403_impl of OCamlFrontend403.Parsetree.structure
-  | OCaml404_intf of OCamlFrontend404.Parsetree.signature
-  | OCaml404_impl of OCamlFrontend404.Parsetree.structure
+  | OCaml402 of OCaml402.tree
+  | OCaml403 of OCaml403.tree
+  | OCaml404 of OCaml404.tree
 
 let magics = [
-  OCaml402Config.ast_intf_magic_number, (fun x -> OCaml402_intf (Obj.obj x));
-  OCaml402Config.ast_impl_magic_number, (fun x -> OCaml402_impl (Obj.obj x));
-  OCaml403Config.ast_intf_magic_number, (fun x -> OCaml403_intf (Obj.obj x));
-  OCaml403Config.ast_impl_magic_number, (fun x -> OCaml403_impl (Obj.obj x));
-  OCaml404Config.ast_intf_magic_number, (fun x -> OCaml404_intf (Obj.obj x));
-  OCaml404Config.ast_impl_magic_number, (fun x -> OCaml404_impl (Obj.obj x));
+  OCaml402.ast_intf_magic_number, (fun x->OCaml402(OCaml402.Intf(Obj.obj x)));
+  OCaml402.ast_impl_magic_number, (fun x->OCaml402(OCaml402.Impl(Obj.obj x)));
+  OCaml403.ast_intf_magic_number, (fun x->OCaml403(OCaml403.Intf(Obj.obj x)));
+  OCaml403.ast_impl_magic_number, (fun x->OCaml403(OCaml403.Impl(Obj.obj x)));
+  OCaml404.ast_intf_magic_number, (fun x->OCaml404(OCaml404.Intf(Obj.obj x)));
+  OCaml404.ast_impl_magic_number, (fun x->OCaml404(OCaml404.Impl(Obj.obj x)));
 ]
 
 let magic_number = function
-  | OCaml402_intf _ -> OCaml402Config.ast_intf_magic_number
-  | OCaml402_impl _ -> OCaml402Config.ast_impl_magic_number
-  | OCaml403_intf _ -> OCaml403Config.ast_intf_magic_number
-  | OCaml403_impl _ -> OCaml403Config.ast_impl_magic_number
-  | OCaml404_intf _ -> OCaml404Config.ast_intf_magic_number
-  | OCaml404_impl _ -> OCaml404Config.ast_impl_magic_number
+  | OCaml402 (OCaml402.Intf _) -> OCaml402.ast_intf_magic_number
+  | OCaml402 (OCaml402.Impl _) -> OCaml402.ast_impl_magic_number
+  | OCaml403 (OCaml403.Intf _) -> OCaml403.ast_intf_magic_number
+  | OCaml403 (OCaml403.Impl _) -> OCaml403.ast_impl_magic_number
+  | OCaml404 (OCaml404.Intf _) -> OCaml404.ast_intf_magic_number
+  | OCaml404 (OCaml404.Impl _) -> OCaml404.ast_impl_magic_number
 
 let payload = function
-  | OCaml402_intf x -> Obj.repr x
-  | OCaml402_impl x -> Obj.repr x
-  | OCaml403_intf x -> Obj.repr x
-  | OCaml403_impl x -> Obj.repr x
-  | OCaml404_intf x -> Obj.repr x
-  | OCaml404_impl x -> Obj.repr x
+  | OCaml402 (OCaml402.Intf x) -> Obj.repr x
+  | OCaml402 (OCaml402.Impl x) -> Obj.repr x
+  | OCaml403 (OCaml403.Intf x) -> Obj.repr x
+  | OCaml403 (OCaml403.Impl x) -> Obj.repr x
+  | OCaml404 (OCaml404.Intf x) -> Obj.repr x
+  | OCaml404 (OCaml404.Impl x) -> Obj.repr x
 
-let magic_length = String.length OCaml402Config.ast_impl_magic_number
+let magic_length = String.length OCaml402.ast_impl_magic_number
 
 let read_magic ic = really_input_string ic magic_length
 
@@ -86,3 +92,62 @@ let to_bytes (filename : filename) x =
       (Bytes.of_string (magic_number x))
       (Marshal.to_bytes filename [])
   ) (Marshal.to_bytes (payload x) [])
+
+let tree_version = function
+  | OCaml402 _ -> `OCaml402
+  | OCaml403 _ -> `OCaml403
+  | OCaml404 _ -> `OCaml404
+
+let migrate_to_402 = function
+  | OCaml402 x -> x
+  | OCaml403 (OCaml403.Impl x) ->
+      OCaml402.Impl
+        (Migrate_parsetree_403_402.copy_OCamlFrontend403_Parsetree_structure x)
+  | OCaml403 (OCaml403.Intf x) ->
+      OCaml402.Intf
+        (Migrate_parsetree_403_402.copy_OCamlFrontend403_Parsetree_signature x)
+  | OCaml404 (OCaml404.Impl x) ->
+      OCaml402.Impl
+        (Migrate_parsetree_403_402.copy_OCamlFrontend403_Parsetree_structure
+           (Migrate_parsetree_404_403.copy_OCamlFrontend404_Parsetree_structure x))
+  | OCaml404 (OCaml404.Intf x) ->
+      OCaml402.Intf
+        (Migrate_parsetree_403_402.copy_OCamlFrontend403_Parsetree_signature
+           (Migrate_parsetree_404_403.copy_OCamlFrontend404_Parsetree_signature x))
+
+let migrate_to_403 = function
+  | OCaml403 x -> x
+  | OCaml402 (OCaml402.Impl x) ->
+      OCaml403.Impl
+        (Migrate_parsetree_402_403.copy_OCamlFrontend402_Parsetree_structure x)
+  | OCaml402 (OCaml402.Intf x) ->
+      OCaml403.Intf
+        (Migrate_parsetree_402_403.copy_OCamlFrontend402_Parsetree_signature x)
+  | OCaml404 (OCaml404.Impl x) ->
+      OCaml403.Impl
+        (Migrate_parsetree_404_403.copy_OCamlFrontend404_Parsetree_structure x)
+  | OCaml404 (OCaml404.Intf x) ->
+      OCaml403.Intf
+        (Migrate_parsetree_404_403.copy_OCamlFrontend404_Parsetree_signature x)
+
+let migrate_to_404 = function
+  | OCaml404 x -> x
+  | OCaml402 (OCaml402.Impl x) ->
+      OCaml404.Impl
+        (Migrate_parsetree_403_404.copy_OCamlFrontend403_Parsetree_structure
+           (Migrate_parsetree_402_403.copy_OCamlFrontend402_Parsetree_structure x))
+  | OCaml402 (OCaml402.Intf x) ->
+      OCaml404.Intf
+        (Migrate_parsetree_403_404.copy_OCamlFrontend403_Parsetree_signature
+           (Migrate_parsetree_402_403.copy_OCamlFrontend402_Parsetree_signature x))
+  | OCaml403 (OCaml403.Impl x) ->
+      OCaml404.Impl
+        (Migrate_parsetree_403_404.copy_OCamlFrontend403_Parsetree_structure x)
+  | OCaml403 (OCaml403.Intf x) ->
+      OCaml404.Intf
+        (Migrate_parsetree_403_404.copy_OCamlFrontend403_Parsetree_signature x)
+
+let migrate_to_version tree = function
+  | `OCaml402 -> OCaml402 (migrate_to_402 tree)
+  | `OCaml403 -> OCaml403 (migrate_to_403 tree)
+  | `OCaml404 -> OCaml404 (migrate_to_404 tree)
