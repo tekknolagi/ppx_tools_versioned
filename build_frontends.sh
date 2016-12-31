@@ -19,10 +19,10 @@ do
         echo "=> OCamlFrontend$V.mli"
         (cd ocaml_parsetrees/$V &&
             echo "(* GENERATED FILE.  DO NOT MODIFY BY HAND *)" &&
-            echo "module Location : sig" && cat location.mli && echo "end" &&
-            echo "module Longident : sig" && cat longident.mli && echo "end" &&
-            echo "module Asttypes : sig" && cat asttypes.mli && echo "end" &&
-            echo "module Parsetree : sig" && cat parsetree.mli && echo "end" &&
+            echo "module Location : sig" && sed -e 's/^/  /' < location.mli && echo "end" &&
+            echo "module Longident : sig" && sed -e 's/^/  /' < longident.mli && echo "end" &&
+            echo "module Asttypes : sig" && sed -e 's/^/  /' < asttypes.mli && echo "end" &&
+            echo "module Parsetree : sig" && sed -e 's/^/  /' < parsetree.mli && echo "end" &&
             echo ""
         ) > OCamlFrontend$V.mli
     fi

@@ -10,3 +10,10 @@ package "metaquot" (
   requires = "ppx_tools"
   ppx = "./ppx_metaquot"
 )
+
+package "migrate-parsetree" (
+  version = "5.0"
+  description = "Migrate between different versions of OCaml AST"
+  archive(byte) = "migrate_parsetree.cma"
+  archive(native) = "migrate_parsetree.cmxa"
+)

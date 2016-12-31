@@ -79,7 +79,10 @@ INSTALL = META \
    ppx_tools.cma $(wildcard ppx_tools.cmxa ppx_tools$(EXT_LIB)) \
    $(wildcard ppx_tools.cmxs) \
    $(call targets,ast_convenience) \
-   $(call targets,ast_mapper_class)
+   $(call targets,ast_mapper_class) \
+   migrate_parsetree.cma \
+   $(wildcard migrate_parsetree.cmxa migrate_parsetree$(EXT_LIB)) \
+	 $(MIGRATE_PARSETREE:.cmo=.cmi) $(OCAML_FRONTENDS:.mli=.cmi)
 
 .PHONY: install
 install:
@@ -98,7 +101,8 @@ DISTRIB = \
   genlifter.ml \
   ppx_metaquot.ml \
   rewriter.ml \
-  ast_mapper_class.ml ast_mapper_class.mli
+  ast_mapper_class.ml ast_mapper_class.mli \
+  ast_convenience.ml ast_convenience.mli \
 
 FPACKAGE = $(PACKAGE)-$(VERSION)
 
@@ -132,7 +136,8 @@ $(OCAML_FRONTENDS):
 MIGRATE_PARSETREE = \
 	migrate_parsetree_403_404.cmo \
 	migrate_parsetree_404_403.cmo \
-	migrate_parsetree_402_403.cmo
+	migrate_parsetree_402_403.cmo \
+	migrate_parsetree_reader.cmo
 
 migrate_parsetree.cma: $(MIGRATE_PARSETREE)
 	$(OCAMLC) -a -o migrate_parsetree.cma $(MIGRATE_PARSETREE)
