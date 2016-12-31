@@ -1505,7 +1505,12 @@ and type_declarations recflag types =
   | OCamlFrontend403.Asttypes.Nonrecursive, [] -> []
   | OCamlFrontend403.Asttypes.Nonrecursive, (x :: xs) ->
       let open OCamlFrontend402 in
+      let pos = {Lexing. pos_fname = "_none_"; pos_lnum = 1;
+                 pos_bol = 0; pos_cnum = -1} in
+      let loc = {Location. loc_start = pos; loc_end = pos;
+                 loc_ghost = true} in
       let ptype_attributes =
-        ({Asttypes. txt = "nonrec"; loc = Location.none}, Parsetree.PStr [])
-        :: x.Parsetree.ptype_attributes in
+        ({Asttypes.txt = "nonrec"; loc}, Parsetree.PStr []) ::
+        x.Parsetree.ptype_attributes
+      in
       {x with Parsetree.ptype_attributes} :: xs

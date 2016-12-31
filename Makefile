@@ -13,7 +13,7 @@ OCAMLOPT = ocamlopt
 COMPFLAGS = -w +A-4-17-44-45-105 -I +compiler-libs -safe-string
 
 .PHONY: all
-all: migrate_parsetree.cma
+all: migrate_parsetree.cma migrate_parsetree.cmxa
 
 .PHONY: clean
 clean:
