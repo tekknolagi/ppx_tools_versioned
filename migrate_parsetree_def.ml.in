@@ -51,3 +51,6 @@ let migration_error_message = function
   | `Pcstr_record      -> "4.03 -> 4.02: Pcstr_record"
   | `Pconst_integer    -> "4.03 -> 4.02: Pconst_integer"
   | `Pconst_float      -> "4.03 -> 4.02: Pconst_float"
+
+type ocaml_version = [`OCaml402 | `OCaml403 | `OCaml404 ]
+let toolchain_version : ocaml_version = `OCaml%%OCAML_VERSION%%

@@ -58,13 +58,15 @@ reinstall:
 OCAMLCURRENT=$(shell $(OCAMLC) -config | ./frontend_version.sh)
 OCAML_FRONTENDS=OCamlFrontend404.mli OCamlFrontend403.mli OCamlFrontend402.mli
 
-$(OCAML_FRONTENDS):
+$(OCAML_FRONTENDS) migrate_parsetree_def.ml: migrate_parsetree_def.ml.in
 	./build_frontends.sh $(OCAMLCURRENT)
 
 ## ./gencopy -I . -map OCamlFrontend403:OCamlFrontend404 OCamlFrontend403.Parsetree.expression > migrate_parsetree_403_404.ml
 ## ./gencopy -I . -map OCamlFrontend404:OCamlFrontend403 OCamlFrontend404.Parsetree.expression > migrate_parsetree_404_403.ml
 ## ./gencopy -I . -map OCamlFrontend402:OCamlFrontend403 OCamlFrontend402.Parsetree.expression > migrate_parsetree_402_403.ml
 ## ./gencopy -I . -map OCamlFrontend403:OCamlFrontend402 OCamlFrontend403.Parsetree.expression > migrate_parsetree_403_402.ml
+
+migrate_parsetree_def.ml: migrate_parsetree_def.ml.in
 
 MIGRATE_PARSETREE = \
 	migrate_parsetree_def.cmo \

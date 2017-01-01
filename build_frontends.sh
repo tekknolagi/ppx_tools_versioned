@@ -27,3 +27,5 @@ do
         ) > OCamlFrontend$V.mli
     fi
 done
+
+sed -e "s/%%OCAML_VERSION%%/${OCAML_VERSION}/" < migrate_parsetree_def.ml.in > migrate_parsetree_def.ml
